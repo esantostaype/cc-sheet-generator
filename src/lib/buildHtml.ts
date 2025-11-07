@@ -9,7 +9,7 @@ export function buildHtml({ pages }: BuildHtmlParams) {
   const extraCss = `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     @page { size: 1920px 1080px; margin: 0; }
-  * { box-sizing: border-box; font-family: Inter, Arial, sans-serif; }
+  * { box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
     html, body { background: #fff; }
     .page { width: 1920px; height: 1080px; page-break-after: always; }
     /* Evitar que la tabla salte mal entre filas */
