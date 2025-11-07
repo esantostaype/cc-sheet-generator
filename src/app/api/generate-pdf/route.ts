@@ -34,21 +34,25 @@ export async function POST(req: NextRequest) {
       sectionSpacingUnits: 0,
     });
 
+    // Generar HTML (sin título/logo/website)
     const html = buildHtml({ pages });
 
-    const isLocal = !process.env.AWS_REGION && process.env.VERCEL === undefined;
-
+    // Detectar entorno: local vs Vercel
+    const isLocal = !process.env.VERCEL;
     const executablePath = isLocal
       ? process.platform === "win32"
-        ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" // Windows
-        : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" // macOS
-      : await chromium.executablePath();
+        ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        : process.platform === "darwin"
+        ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        : "/usr/bin/google-chrome"
+      : await chromium.executablePath() || "/usr/bin/chromium-browser";
 
+    // Lanzar Puppeteer (Chromium)
     const browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: { width: 1920, height: 1080 },
       executablePath,
-      headless: true,
+      headless: true, // 👈 modo headless siempre
     });
 
     let generatedPdfBytes: Uint8Array;
@@ -109,7 +113,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (err) {
-    console.error(err);
+    console.error("❌ PDF generation error:", err);
     return new Response("Internal error generating/merging PDF", { status: 500 });
   }
 }
