@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useRef } from "react";
@@ -25,7 +26,7 @@ export default function Home() {
   const validateExactlyOneExcelAndOnePdf = (files: FileList) => {
     const arr = Array.from(files);
     if (arr.length !== 2) {
-      throw new Error("Debes adjuntar exactamente 2 archivos: 1 Excel y 1 PDF.");
+      throw new Error("You must attach exactly 2 files: 1 Excel and 1 PDF.");
     }
 
     const isExcel = (f: File) => {
@@ -38,10 +39,10 @@ export default function Home() {
     const pdf = arr.find(isPdf) || null;
 
     if (!excel || !pdf) {
-      throw new Error("Debe ser 1 Excel (.xlsx/.xls) y 1 PDF (.pdf).");
+      throw new Error("It must be 1 Excel (.xlsx/.xls) and 1 PDF (.pdf).");
     }
     if (arr.filter(isExcel).length !== 1 || arr.filter(isPdf).length !== 1) {
-      throw new Error("Debe ser 1 Excel y 1 PDF (exactamente).");
+      throw new Error("It must be 1 Excel and 1 PDF (exactly).");
     }
 
     return { excel, pdf };
@@ -56,7 +57,7 @@ export default function Home() {
       setPdfFile(pdf);
       startSelectProgress();
     } catch (err: any) {
-      setErrorMsg(err.message || "Selección inválida. Sube 1 Excel y 1 PDF.");
+      setErrorMsg(err.message || "Invalid selection. Upload 1 Excel and 1 PDF.");
       if (fileInputRef.current) fileInputRef.current.value = "";
       setExcelFile(null);
       setPdfFile(null);
@@ -78,7 +79,7 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!excelFile || !pdfFile) {
-      setErrorMsg("Debes adjuntar 1 Excel y 1 PDF.");
+      setErrorMsg("You must attach 1 Excel and 1 PDF.");
       return;
     }
     if (errorMsg) return;
@@ -96,7 +97,7 @@ export default function Home() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "directory.pdf";
+      a.download = "Carrier-Contact-Sheet.pdf";
       a.click();
       URL.revokeObjectURL(url);
 
@@ -147,7 +148,7 @@ export default function Home() {
                   <span className="text-accent underline">Browse</span>
                 </span>
                 <span className="text-xs text-gray-500 mt-1">
-                  (Exactamente 2 archivos: 1 Excel y 1 PDF)
+                  (Exactly 2 files: 1 Excel and 1 PDF)
                 </span>
               </div>
 
@@ -183,14 +184,14 @@ export default function Home() {
             )}
 
             {/* Barra decorativa (1s) */}
-            {excelFile && pdfFile && !loading && !errorMsg && (
+            {/* {excelFile && pdfFile && !loading && !errorMsg && (
               <div className="mt-3 w-full bg-gray-800 rounded-full h-3 overflow-hidden">
                 <div
                   className="h-full bg-accent transition-all duration-75 ease-out"
                   style={{ width: `${selectProgress}%` }}
                 />
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Botón */}

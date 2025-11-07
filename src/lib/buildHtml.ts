@@ -2,9 +2,6 @@
 import type { Page } from "@/interfaces";
 
 type BuildHtmlParams = {
-  title: string;
-  logoUrl?: string;
-  website?: string;
   pages: Page[];
 };
 

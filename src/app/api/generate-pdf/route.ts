@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     const mergedBytes = await merged.save();
 
-    return new Response(mergedBytes, {
+    return new Response(Buffer.from(mergedBytes), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="directory.pdf"`,
