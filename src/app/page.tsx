@@ -6,6 +6,7 @@ import { useState, useRef } from "react";
 export default function Home() {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [monthName, setMonthName] = useState<string>("");
   const [selectProgress, setSelectProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -82,6 +83,10 @@ export default function Home() {
       setErrorMsg("You must attach 1 Excel and 1 PDF.");
       return;
     }
+    if (!monthName.trim()) {
+      setErrorMsg("Please enter the month name.");
+      return;
+    }
     if (errorMsg) return;
 
     try {
@@ -97,13 +102,18 @@ export default function Home() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "Carrier-Contact-Sheet.pdf";
+      
+      // Generar nombre con el mes
+      const sanitizedMonth = monthName.trim().replace(/[^a-zA-Z0-9-_]/g, '-');
+      a.download = `Carrier-Contact-Sheet-${sanitizedMonth}.pdf`;
+      
       a.click();
       URL.revokeObjectURL(url);
 
       // limpiar
       setExcelFile(null);
       setPdfFile(null);
+      setMonthName("");
       setSelectProgress(0);
       setErrorMsg("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -121,6 +131,21 @@ export default function Home() {
         <h1 className="text-3xl text-center mb-4">Carrier Contact Sheet Generator</h1>
 
         <form onSubmit={handleSubmit} className="grid gap-4 w-full">
+          {/* Input para el nombre del mes */}
+          <div>
+            <label htmlFor="monthName" className="block font-medium text-gray-300 mb-2">
+              Month & Year Name <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="monthName"
+              type="text"
+              value={monthName}
+              onChange={(e) => setMonthName(e.target.value)}
+              placeholder="e.g., January 2025, February 2025, March 2025..."
+              className="w-full px-4 py-3 bg-gray-900 border-2 border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:border-accent transition"
+            />
+          </div>
+
           {/* Drag & Drop */}
           <div>
             <label
@@ -182,23 +207,13 @@ export default function Home() {
             {errorMsg && (
               <p className="text-center mt-2 text-sm text-red-400">{errorMsg}</p>
             )}
-
-            {/* Barra decorativa (1s) */}
-            {/* {excelFile && pdfFile && !loading && !errorMsg && (
-              <div className="mt-3 w-full bg-gray-800 rounded-full h-3 overflow-hidden">
-                <div
-                  className="h-full bg-accent transition-all duration-75 ease-out"
-                  style={{ width: `${selectProgress}%` }}
-                />
-              </div>
-            )} */}
           </div>
 
           {/* Botón */}
           <button
             type="submit"
-            disabled={!excelFile || !pdfFile || loading || !!errorMsg}
-            className="p-4 bg-accent hover:bg-accent-700 transition text-white rounded flex items-center justify-center gap-2 disabled:opacity-30"
+            disabled={!excelFile || !pdfFile || !monthName.trim() || loading || !!errorMsg}
+            className="p-4 bg-accent hover:bg-accent-700 transition text-white rounded flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
