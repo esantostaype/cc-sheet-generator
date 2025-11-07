@@ -100,7 +100,7 @@ export function paginateFill(
         vp: b.vp,
         regions: b.regions,
         rows: slice,
-        continuedFrom: firstOfVP ? undefined : `← Continued from 'VP – ${b.vp}'`,
+        continuedFrom: firstOfVP ? undefined : `<- Continued from 'VP – ${b.vp}'`,
         showGroupHeader: firstOfVP,
       });
 
