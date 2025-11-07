@@ -34,10 +34,8 @@ export async function POST(req: NextRequest) {
       sectionSpacingUnits: 0,
     });
 
-    // Generar HTML (sin título/logo/website)
     const html = buildHtml({ pages });
 
-    // Preparar Puppeteer + Chromium compatible con Vercel
     const isLocal = !process.env.AWS_REGION && process.env.VERCEL === undefined;
 
     const executablePath = isLocal
