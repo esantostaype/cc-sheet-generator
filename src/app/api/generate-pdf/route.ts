@@ -4,7 +4,8 @@ import { paginateFill } from "@/lib/paginateFill";
 import { buildHtml } from "@/lib/buildHtml";
 import { PDFDocument } from "pdf-lib";
 
-import chromium from "@sparticuz/chromium";
+// Importación condicional según el entorno
+import chromium from "@sparticuz/chromium-min";
 import puppeteer from "puppeteer-core";
 
 export const runtime = "nodejs";
@@ -39,20 +40,29 @@ export async function POST(req: NextRequest) {
 
     // Detectar entorno: local vs Vercel
     const isLocal = !process.env.VERCEL;
-    const executablePath = isLocal
-      ? process.platform === "win32"
+    
+    let executablePath: string;
+    
+    if (isLocal) {
+      // Rutas locales de Chrome
+      executablePath = process.platform === "win32"
         ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         : process.platform === "darwin"
         ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-        : "/usr/bin/google-chrome"
-      : await chromium.executablePath() || "/usr/bin/chromium-browser";
+        : "/usr/bin/google-chrome";
+    } else {
+      // En Vercel, usa chromium-min
+      executablePath = await chromium.executablePath(
+        'https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar'
+      );
+    }
 
     // Lanzar Puppeteer (Chromium)
     const browser = await puppeteer.launch({
-      args: chromium.args,
+      args: isLocal ? [] : chromium.args,
       defaultViewport: { width: 1920, height: 1080 },
       executablePath,
-      headless: true, // 👈 modo headless siempre
+      headless: true,
     });
 
     let generatedPdfBytes: Uint8Array;
